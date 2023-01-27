@@ -96,6 +96,7 @@ class GalacticaCausalLMBatch(CausalLMBatch):
         next_token_choosers = []
         stopping_criterias = []
         input_lengths = []
+        all_logprobs = []
 
         # Parse batch
         for r in pb.requests:
@@ -106,6 +107,7 @@ class GalacticaCausalLMBatch(CausalLMBatch):
             stopping_criterias.append(
                 StoppingCriteria.from_pb(r.stopping_parameters, tokenizer)
             )
+            all_logprobs.append(None)
 
         # Tokenize batch
         pad_to_multiple_of = 8 if device.type == "cuda" else None
@@ -128,6 +130,7 @@ class GalacticaCausalLMBatch(CausalLMBatch):
             position_ids=position_ids,
             past_key_values=None,
             all_input_ids=all_input_ids,
+            all_logprobs=all_logprobs,
             input_lengths=input_lengths,
             next_token_choosers=next_token_choosers,
             stopping_criterias=stopping_criterias,
