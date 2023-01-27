@@ -1,7 +1,10 @@
 install-server:
 	cd server && make install
 
-install-router:
+build-client:
+	cd router/client && cargo build	
+
+install-router: build-client
 	cd router && cargo install --path .
 
 install-launcher:

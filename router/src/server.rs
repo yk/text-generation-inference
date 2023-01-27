@@ -60,6 +60,7 @@ async fn health(state: Extension<ServerState>) -> Result<(), (StatusCode, Json<E
                     max_new_tokens: 1,
                     stop: vec![],
                     details: false,
+                    seed: None,
                 },
             },
         )

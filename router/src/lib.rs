@@ -25,6 +25,8 @@ pub(crate) struct GenerateParameters {
     pub stop: Vec<String>,
     #[serde(default)]
     pub details: bool,
+    #[serde(default = "default_seed")]
+    pub seed: Option<i32>,
 }
 
 fn default_temperature() -> f32 {
@@ -47,6 +49,10 @@ fn default_max_new_tokens() -> u32 {
     20
 }
 
+fn default_seed() -> Option<i32> {
+    None
+}
+
 fn default_parameters() -> GenerateParameters {
     GenerateParameters {
         temperature: default_temperature(),
@@ -56,6 +62,7 @@ fn default_parameters() -> GenerateParameters {
         max_new_tokens: default_max_new_tokens(),
         stop: vec![],
         details: false,
+        seed: default_seed(),
     }
 }
 

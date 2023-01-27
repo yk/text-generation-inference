@@ -36,6 +36,8 @@ message NextTokenChooserParameters {
     float top_p = 3;
     /// apply sampling on the logits
     bool do_sample = 4;
+    /// random seed for generation
+    optional sint32 seed = 5;
 }
 
 message StoppingCriteriaParameters {
