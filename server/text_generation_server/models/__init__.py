@@ -9,6 +9,7 @@ from text_generation_server.models.bloom import BLOOM, BLOOMSharded
 from text_generation_server.models.seq2seq_lm import Seq2SeqLM
 from text_generation_server.models.galactica import Galactica, GalacticaSharded
 from text_generation_server.models.santacoder import SantaCoder
+from text_generation_server.models.llama import Llama
 from text_generation_server.models.gpt_neox import GPTNeoxSharded
 from text_generation_server.models.t5 import T5Sharded
 
@@ -48,6 +49,9 @@ def get_model(
 
     if "santacoder" in model_id:
         return SantaCoder(model_id, revision, quantize)
+
+    if "llama" in model_id:
+        return Llama(model_id, revision, quantize)
 
     config = AutoConfig.from_pretrained(model_id, revision=revision)
 
