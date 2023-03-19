@@ -19,11 +19,14 @@ install-transformers:
 	mv transformers-$(transformers_commit) transformers
 	cd transformers && python setup.py install
 
+install-transformers-main:
+	pip install "git+https://github.com/huggingface/transformers@60d51ef5123d949fd8c59cd4d3254e711541d278#egg=transformers"
+
 install-torch:
 	# Install specific version of torch
 	pip install torch --extra-index-url https://download.pytorch.org/whl/cu118 --no-cache-dir
 
-install: gen-server install-torch install-transformers
+install: gen-server install-torch install-transformers-main
 	pip install pip --upgrade
 	pip install -e . --no-cache-dir
 
