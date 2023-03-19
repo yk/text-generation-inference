@@ -20,6 +20,7 @@ install-transformers:
 	cd transformers && python setup.py install
 
 install-transformers-main:
+	pip uninstall transformers -y || true
 	pip install "git+https://github.com/huggingface/transformers@60d51ef5123d949fd8c59cd4d3254e711541d278#egg=transformers"
 
 install-torch:
