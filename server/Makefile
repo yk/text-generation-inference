@@ -22,7 +22,7 @@ install-transformers:
 install-transformers-main:
 	apt-get update && apt-get install -y --no-install-recommends git
 	pip uninstall transformers -y || true
-	pip install "git+https://github.com/huggingface/transformers@60d51ef5123d949fd8c59cd4d3254e711541d278#egg=transformers"
+	pip install "git+https://github.com/yk/transformers@yk/text_generation_inference#egg=transformers"
 	rm -rf /var/lib/apt/lists/*
 
 install-torch:

@@ -3,7 +3,7 @@ name: Build and push docker image to github registry
 on:
   push:
     branches:
-      - main
+      - llama-bkp
 
 jobs:
   build:
