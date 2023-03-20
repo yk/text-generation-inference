@@ -497,17 +497,14 @@ pub async fn run(
     struct ApiDoc;
 
     // Create state
-    let validation = match tokenizer {
-        Some(tokenizer) => Some(Validation::new(
+    let validation = Validation::new(
             validation_workers,
             tokenizer,
             max_best_of,
             max_stop_sequences,
             max_input_length,
             max_total_tokens,
-        )),
-        _ => None,
-    };
+        );
     let infer = Infer::new(
         client,
         validation,

@@ -6,7 +6,7 @@ use futures::future::try_join_all;
 use nohash_hasher::IntMap;
 use std::sync::Arc;
 use text_generation_client::{
-    Batch, ClientError, GeneratedText, Generation, PrefillTokens, ShardedClient,
+    Batch, ClientError, GeneratedText, Generation, PrefillTokens, ShardedClient, StoppingCriteriaParameters, NextTokenChooserParameters,
 };
 use thiserror::Error;
 use tokio::sync::{mpsc, Notify, Semaphore, TryAcquireError};
@@ -19,7 +19,7 @@ use tracing::{info_span, instrument, Instrument, Span};
 #[derive(Clone)]
 pub struct Infer {
     /// Validation
-    validation: Option<Validation>,
+    validation: Validation,
     /// Request queue
     queue: Queue,
     /// Shared state
@@ -37,7 +37,7 @@ struct Shared {
 impl Infer {
     pub(crate) fn new(
         client: ShardedClient,
-        validation: Option<Validation>,
+        validation: Validation,
         max_batch_size: usize,
         max_waiting_tokens: usize,
         max_concurrent_requests: usize,
@@ -87,10 +87,7 @@ impl Infer {
             })?;
 
         // Validate request
-        let valid_request = match self.validation {
-            Some(v) => v.validate(request).await?,
-            _ => ValidGenerateRequest::from(request),
-        };
+        let valid_request = self.validation.validate(request).await?;
 
         // MPSC channel to communicate with the background batching task
         let (response_tx, response_rx) = mpsc::unbounded_channel();

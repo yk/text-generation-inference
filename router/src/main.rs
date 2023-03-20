@@ -92,18 +92,21 @@ fn main() -> Result<(), std::io::Error> {
 
     // Check if "llama" is in tokenizer_name
     let is_llama = tokenizer_name.contains("llama");
+    println!("tokenizer_name: {}", tokenizer_name);
+    println!("is_llama: {}", is_llama);
 
     let local_path = Path::new(&tokenizer_name);
     let tokenizer = if !is_llama {
-        if local_path.exists() && local_path.is_dir() && local_path.join("tokenizer.json").exists()
-        {
-            // Load local tokenizer
-            Tokenizer::from_file(local_path.join("tokenizer.json")).unwrap()
-        } else {
-            // Download and instantiate tokenizer
-            // We need to download it outside of the Tokio runtime
-            Tokenizer::from_pretrained(tokenizer_name.clone(), None).unwrap()
-        };
+        let tokenizer = if local_path.exists() && local_path.is_dir() && local_path.join("tokenizer.json").exists()
+            {
+                // Load local tokenizer
+                Tokenizer::from_file(local_path.join("tokenizer.json")).unwrap()
+            } else {
+                // Download and instantiate tokenizer
+                // We need to download it outside of the Tokio runtime
+                Tokenizer::from_pretrained(tokenizer_name.clone(), None).unwrap()
+            };
+        Some(tokenizer)
     }else{
         None
     };
