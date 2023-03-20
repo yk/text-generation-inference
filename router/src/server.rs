@@ -455,7 +455,7 @@ pub async fn run(
     max_batch_size: usize,
     max_waiting_tokens: usize,
     client: ShardedClient,
-    tokenizer: Tokenizer,
+    tokenizer: Option<Tokenizer>,
     validation_workers: usize,
     addr: SocketAddr,
     allow_origin: Option<AllowOrigin>,
@@ -497,14 +497,17 @@ pub async fn run(
     struct ApiDoc;
 
     // Create state
-    let validation = Validation::new(
-        validation_workers,
-        tokenizer,
-        max_best_of,
-        max_stop_sequences,
-        max_input_length,
-        max_total_tokens,
-    );
+    let validation = match tokenizer {
+        Some(tokenizer) => Some(Validation::new(
+            validation_workers,
+            tokenizer,
+            max_best_of,
+            max_stop_sequences,
+            max_input_length,
+            max_total_tokens,
+        )),
+        _ => None,
+    };
     let infer = Infer::new(
         client,
         validation,

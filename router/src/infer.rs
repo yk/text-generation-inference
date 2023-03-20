@@ -1,5 +1,5 @@
 /// Batching and inference logic
-use crate::validation::{Validation, ValidationError};
+use crate::validation::{Validation, ValidationError, ValidGenerateRequest};
 use crate::{Entry, Queue, Token};
 use crate::{GenerateRequest, PrefillToken};
 use futures::future::try_join_all;
@@ -19,7 +19,7 @@ use tracing::{info_span, instrument, Instrument, Span};
 #[derive(Clone)]
 pub struct Infer {
     /// Validation
-    validation: Validation,
+    validation: Option<Validation>,
     /// Request queue
     queue: Queue,
     /// Shared state
@@ -37,7 +37,7 @@ struct Shared {
 impl Infer {
     pub(crate) fn new(
         client: ShardedClient,
-        validation: Validation,
+        validation: Option<Validation>,
         max_batch_size: usize,
         max_waiting_tokens: usize,
         max_concurrent_requests: usize,
@@ -87,7 +87,10 @@ impl Infer {
             })?;
 
         // Validate request
-        let valid_request = self.validation.validate(request).await?;
+        let valid_request = match self.validation {
+            Some(v) => v.validate(request).await?,
+            _ => ValidGenerateRequest::from(request),
+        };
 
         // MPSC channel to communicate with the background batching task
         let (response_tx, response_rx) = mpsc::unbounded_channel();

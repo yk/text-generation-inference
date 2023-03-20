@@ -89,8 +89,12 @@ fn main() -> Result<(), std::io::Error> {
 
     // Tokenizer instance
     // This will only be used to validate payloads
+
+    // Check if "llama" is in tokenizer_name
+    let is_llama = tokenizer_name.contains("llama");
+
     let local_path = Path::new(&tokenizer_name);
-    let tokenizer =
+    let tokenizer = if !is_llama {
         if local_path.exists() && local_path.is_dir() && local_path.join("tokenizer.json").exists()
         {
             // Load local tokenizer
@@ -100,6 +104,9 @@ fn main() -> Result<(), std::io::Error> {
             // We need to download it outside of the Tokio runtime
             Tokenizer::from_pretrained(tokenizer_name.clone(), None).unwrap()
         };
+    }else{
+        None
+    };
 
     // Launch Tokio runtime
     tokio::runtime::Builder::new_multi_thread()
