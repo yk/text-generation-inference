@@ -322,7 +322,6 @@ class CausalLM(Model):
         outputs = self.model.forward(
             input_ids=input_ids,
             attention_mask=attention_mask,
-            position_ids=position_ids,
             past_key_values=past_key_values,
             use_cache=True,
         )
