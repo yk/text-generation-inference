@@ -20,6 +20,7 @@ install-transformers:
 	cd transformers && python setup.py install
 
 install-transformers-main:
+	# touch
 	apt-get update && apt-get install -y --no-install-recommends git
 	pip uninstall transformers -y || true
 	pip install "git+https://github.com/yk/transformers@yk/text_generation_inference#egg=transformers"
